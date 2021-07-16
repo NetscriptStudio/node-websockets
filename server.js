@@ -1,7 +1,7 @@
 'use strict';
 
 const http = require("http")
-const websocketServer = require("websocket").server
+const websocketServer = require("ws")
 const httpServer = http.createServer()
 
 const PORT = process.env.PORT || 3000;
