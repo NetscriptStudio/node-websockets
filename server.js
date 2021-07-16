@@ -1,71 +1,38 @@
 'use strict';
 
-const express = require('express');
-const { Server } = require('ws');
+const http = require("http")
+const websocketServer = require("websocket").server
+const httpServer = http.createServer()
 
 const PORT = process.env.PORT || 3000;
 const INDEX = '/index.html';
+
+var messages = []
 
 const server = express()
   .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-const wss = new Server({ server });
+const wsServer = new websocketServer({
+  "httpServer": httpServer
+})
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-  ws.on('close', () => console.log('Client disconnected'));
-});
+wsServer.on("request", request => {
+  const connection = request.accept(null, request.origin)
 
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
-  });
-}, 1000);
+  connection.on("open", () => console.log("Opened Connection"))
+  connection.on("close", () => console.log("Closed Connection"))
 
+  connection.on("message", message => {
+      var data = JSON.parse(message.binaryData.toString())
 
-
-
-
-
-
-
-
-
-
-
-
-const express = require('express');
-const { Server } = require('ws');
-
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const wss = new Server({ server });
-
-var Packet = []
-
-// New messages received
-
-
-// List all packets
-function listPackets(packet){
-    Packet.push(packet);
-}
-
-// New client connected
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-  ws.on('close', () => console.log('Client disconnected'));
-});
-
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(Packet.toString());
-    //client.send(new Date().toTimeString());
-  });
-}); // }1000 );
+      const msg = data
+      console.log(msg)
+      })
+      
+      messages.push(msg)
+      const payload = {
+          "message": messages.values
+      }
+      connection.send(JSON.stringify(payload))
+})
