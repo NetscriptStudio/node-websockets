@@ -19,5 +19,9 @@ wss.on('connection', (ws) => {
 
 	ws.on('message', (msg) => {
 		console.log(JSON.parse(msg));
+    var mess = JSON.parse(msg);
+
+    data.push(mess);
+    ws.send(data.values);
 	});
 });
