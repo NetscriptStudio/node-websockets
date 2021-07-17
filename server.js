@@ -15,15 +15,9 @@ const wss = new Server({ server });
 var data = []
 
 wss.on('connection', (ws) => {
-  console.log('Client connected');
-  ws.on('close', () => console.log('Client disconnected'));
+	console.log('Client connected');
 
-  wss.on("message", function(message) {
-    console.log("Client sented: ", message);
-    data.push(message);
-
-    wss.clients.forEach((client) => {
-      client.send(data.toString());
-    });
-  })
+	ws.on('message', (msg) => {
+		console.log(JSON.parse(msg));
+	});
 });
