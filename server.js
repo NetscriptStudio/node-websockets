@@ -1,32 +1,28 @@
 'use strict';
 
-const http = require("http")
-const websocketServer = require("ws")
-const httpServer = http.createServer()
+const express = require('express');
+const { Server } = require('ws');
 
 const PORT = process.env.PORT || 3000;
+const INDEX = '/index.html';
 
-const WebSocket = require('ws');
-const wsServer = new WebSocket.Server({
-    port: PORT
-});
+const server = express()
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-var messages = []
+const wss = new Server({ server });
 
-wsServer.on('connection', function (socket) {
-    console.log("A client just connected");
+var data = []
 
-    // Attach some behavior to the incoming socket
-    socket.on('message', function (msg) {
-        console.log("Received message from client: "  + msg);
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+  ws.on('close', () => console.log('Client disconnected'));
 
-        // Broadcast that message to all connected clients
-        messages.push(msg);
-      
-        wsServer.clients.forEach(function (client) {
-            client.send(messages);
-        });
+  wss.on("message", function(message) {
+    data.push(message);
 
+    wss.clients.forEach((client) => {
+      client.send(data.toString());
     });
-
+  })
 });
