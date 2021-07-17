@@ -5,34 +5,28 @@ const websocketServer = require("ws")
 const httpServer = http.createServer()
 
 const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
+
+const WebSocket = require('ws');
+const wsServer = new WebSocket.Server({
+    port: PORT
+});
 
 var messages = []
 
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+wsServer.on('connection', function (socket) {
+    console.log("A client just connected");
 
-const wsServer = new websocketServer({
-  "httpServer": httpServer
-})
+    // Attach some behavior to the incoming socket
+    socket.on('message', function (msg) {
+        console.log("Received message from client: "  + msg);
 
-wsServer.on("request", request => {
-  const connection = request.accept(null, request.origin)
-
-  connection.on("open", () => console.log("Opened Connection"))
-  connection.on("close", () => console.log("Closed Connection"))
-
-  connection.on("message", message => {
-      var data = JSON.parse(message.binaryData.toString())
-
-      const msg = data
-      console.log(msg)
-      })
+        // Broadcast that message to all connected clients
+        messages.push(msg);
       
-      messages.push(msg)
-      const payload = {
-          "message": messages.values
-      }
-      connection.send(JSON.stringify(payload))
-})
+        wsServer.clients.forEach(function (client) {
+            client.send(messages);
+        });
+
+    });
+
+});
