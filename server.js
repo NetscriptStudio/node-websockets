@@ -12,18 +12,15 @@ const server = express()
 
 const wss = new Server({ server });
 
-var data = []
-
 wss.on('connection', (ws) => {
 	console.log('Client connected');
 
 	ws.on('message', (msg) => {
 		console.log(JSON.parse(msg));
-    var mess = JSON.parse(msg);
-
-    data.push(mess);
-    wss.clients.forEach((client) => {
-      client.send(JSON.parse(data.values.toString()));
-    });
+    		var mess = JSON.parse(msg.toString());
+		
+    		wss.clients.forEach((client) => {
+      		client.send(JSON.parse(mess));
+    		})
 	});
 });
