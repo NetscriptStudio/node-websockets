@@ -17,10 +17,10 @@ wss.on('connection', (ws) => {
 
 	ws.on('message', (msg) => {
 		console.log(JSON.parse(msg));
-    		var mess = JSON.parse(msg.toString());
-		
+    		var mess = JSON.parse(msg);
+
     		wss.clients.forEach((client) => {
-      		client.send(JSON.parse(mess));
+      		client.send(JSON.stringify(mess));
     		})
 	});
 });
