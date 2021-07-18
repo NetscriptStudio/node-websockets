@@ -22,6 +22,8 @@ wss.on('connection', (ws) => {
     var mess = JSON.parse(msg);
 
     data.push(mess);
-    ws.send(data.values);
+    wss.clients.forEach((client) => {
+      client.send(JSON.parse(data.values.toString()));
+    });
 	});
 });
