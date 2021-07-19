@@ -17,16 +17,16 @@ var data = {}
 wss.on('connection', (ws) => {
 	console.log('Client connected');
 
-  ws.client.send(JSON.stringify(data));
+  	ws.client.send(JSON.stringify(data));
 
 	ws.on('message', (msg) => {
 		console.log(JSON.parse(msg));
-    var mess = JSON.parse(msg);
+    		var mess = JSON.parse(msg);
 
-    data[mess.gameName][mess.name] = mess
-    wss.clients.forEach((client) => {
+    		data[mess.gameName][mess.name] = mess
+    		wss.clients.forEach((client) => {
 
-      client.send(JSON.stringify(data));
-    	})
-	  });
+      		client.send(JSON.stringify(data));
+    		})
+	});
 });
