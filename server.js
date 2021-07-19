@@ -24,7 +24,7 @@ wss.on('connection', (ws) => {
     		data[mess.gameName.name] = mess
     		wss.clients.forEach((client) => {
 
-      		client.send(JSON.stringify(data));
+      			client.send(JSON.stringify(data));
     		})
 	});
 });
