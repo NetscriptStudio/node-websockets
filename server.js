@@ -12,19 +12,28 @@ const server = express()
 
 const wss = new Server({ server });
 
-var data = {}
+var data = []
 
 wss.on('connection', (ws) => {
-	console.log('Client connected');
+	console.log('A new client connected!');
 
 	ws.on('message', (msg) => {
+
 		console.log(JSON.parse(msg));
     		var mess = JSON.parse(msg);
 
-    		data[mess.gameName][mess.name] = mess
+    		if("action" in mess)
+			if(mess.action == "remove"){
+        		data.reduce(mess);
+      			}
+    		}
+    		else{
+      			data.push(mess);
+    			}
+
     		wss.clients.forEach((client) => {
-			
+
       			client.send(JSON.stringify(data));
-    		})
-	});
+    			})
+	  	});
 });
