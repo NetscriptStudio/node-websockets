@@ -21,7 +21,7 @@ wss.on('connection', (ws) => {
 		console.log(JSON.parse(msg));
     		var mess = JSON.parse(msg);
 
-    		data[mess.gameName[mess.name]] = mess
+    		data[mess.gameName][mess.name] = mess
     		wss.clients.forEach((client) => {
 			
       			client.send(JSON.stringify(data));
