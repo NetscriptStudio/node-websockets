@@ -12,7 +12,7 @@ const server = express()
 
 const wss = new Server({ server });
 
-var data = []
+var data = {}
 
 wss.on('connection', (ws) => {
 	console.log('A new client connected!');
