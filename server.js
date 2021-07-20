@@ -22,14 +22,7 @@ wss.on('connection', (ws) => {
 		console.log(JSON.parse(msg));
     		var mess = JSON.parse(msg);
 
-    		if("action" in mess)
-			if(mess.action == "remove"){
-        		data.reduce(mess);
-      			}
-    		}
-    		else{
-      			data.push(mess);
-    			}
+    		data[mess.name] = mess
 
     		wss.clients.forEach((client) => {
 
