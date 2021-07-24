@@ -12,8 +12,6 @@ const server = express()
 
 const wss = new Server({ server });
 
-var data = {}
-
 wss.on('connection', (ws) => {
 	console.log('A new client connected!');
 
@@ -22,11 +20,9 @@ wss.on('connection', (ws) => {
 		console.log(JSON.parse(msg));
     		var mess = JSON.parse(msg);
 
-    		data[mess.name] = mess
-
     		wss.clients.forEach((client) => {
 
-      			client.send(JSON.stringify(data));
+      			client.send(JSON.stringify(mess));
     			})
 	  	});
 });
